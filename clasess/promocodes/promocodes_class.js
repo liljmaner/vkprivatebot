@@ -15,108 +15,119 @@ class promocodes_class
   }
   get_random = (user_id,callback) => 
   {
-    const chance = Math.floor(Math.random() * 101);
-    if (chance <= 3) { // p2c row
-       this.find_one({$lt: 4}, (fo_status,fo_row) => {
-        this.Users_Class.change(user_id, { 
-            "id": user_id,
-            "events": 
-            [ 
-                {
-                    "name": "like_add",
-                    "value": true
-                },
-                {
-                    "name": "group_join",
-                    "value": true
-                }
-            ],
-            "is_used": true
-        }, (ch_status,ch_row) => 
-        { 
-          console.log("ch_status:",ch_status)
-          console.log("ch_row",ch_row)  
-          if (ch_status != 'sucess')
-            return callback("error",ch_row)
-          return callback("sucess",fo_row['promocode_name'])
+        this.Users_Class.check_requirement(user_id, (cr_status,cr_row) => 
+        {
+          if (cr_status == 'sucess')
+          {
+            const chance = Math.floor(Math.random() * 101);
+            if (chance <= 3) { // p2c row
+               this.find_one({$lt: 4}, (fo_status,fo_row) => {
+                this.Users_Class.change(user_id, { 
+                    "id": user_id,
+                    "events": 
+                    [ 
+                        {
+                            "name": "like_add",
+                            "value": true
+                        },
+                        {
+                            "name": "group_join",
+                            "value": true
+                        }
+                    ],
+                    "is_used": true
+                }, (ch_status,ch_row) => 
+                { 
+                  console.log("ch_status:",ch_status)
+                  console.log("ch_row",ch_row)  
+                  if (ch_status != 'sucess')
+                    return callback("error",ch_row)
+                  return callback("sucess",fo_row['promocode_name'])
+                })
+               } )
+            } else if (chance <= 7) {
+                this.find_one({$lt: 4}, (fo_status,fo_row) => {
+                    this.Users_Class.change(user_id, { 
+                        "id": user_id,
+                        "events": 
+                        [ 
+                            {
+                                "name": "like_add",
+                                "value": true
+                            },
+                            {
+                                "name": "group_join",
+                                "value": true
+                            }
+                        ],
+                        "is_used": true
+                    }, (ch_status,ch_row) => 
+                    { 
+                      console.log("ch_status:",ch_status)
+                      console.log("ch_row",ch_row)  
+                      if (ch_status != 'sucess')
+                        return callback("error",ch_row)
+                      return callback("sucess",fo_row['promocode_name'])
+                    })
+                   } )
+            } else if (chance <= 40) {
+                this.find_one({$lt: 4}, (fo_status,fo_row) => {
+                    this.Users_Class.change(user_id, { 
+                        "id": user_id,
+                        "events": 
+                        [ 
+                            {
+                                "name": "like_add",
+                                "value": true
+                            },
+                            {
+                                "name": "group_join",
+                                "value": true
+                            }
+                        ],
+                        "is_used": true
+                    }, (ch_status,ch_row) => 
+                    { 
+                      console.log("ch_status:",ch_status)
+                      console.log("ch_row",ch_row)  
+                      if (ch_status != 'sucess')
+                        return callback("error",ch_row)
+                      return callback("sucess",fo_row['promocode_name'])
+                    })
+                })
+            } else if (chance > 40) {
+                this.find_one({$lt: 4}, (fo_status,fo_row) => {
+                    this.Users_Class.change(user_id, { 
+                        "id": user_id,
+                        "events": 
+                        [ 
+                            {
+                                "name": "like_add",
+                                "value": true
+                            },
+                            {
+                                "name": "group_join",
+                                "value": true
+                            }
+                        ],
+                        "is_used": true
+                    }, (ch_status,ch_row) => 
+                    { 
+                      console.log("ch_status:",ch_status)
+                      console.log("ch_row",ch_row)  
+                      if (ch_status != 'sucess')
+                        return callback("error",ch_row)
+                      return callback("sucess",fo_row['promocode_name'])
+                    })
+                })
+            }  
+          }
+          else
+          {
+            return callback(cr_status,cr_row)
+          }
         })
-       } )
-    } else if (chance <= 7) {
-        this.find_one({$lt: 4}, (fo_status,fo_row) => {
-            this.Users_Class.change(user_id, { 
-                "id": user_id,
-                "events": 
-                [ 
-                    {
-                        "name": "like_add",
-                        "value": true
-                    },
-                    {
-                        "name": "group_join",
-                        "value": true
-                    }
-                ],
-                "is_used": true
-            }, (ch_status,ch_row) => 
-            { 
-              console.log("ch_status:",ch_status)
-              console.log("ch_row",ch_row)  
-              if (ch_status != 'sucess')
-                return callback("error",ch_row)
-              return callback("sucess",fo_row['promocode_name'])
-            })
-           } )
-    } else if (chance <= 40) {
-        this.find_one({$lt: 4}, (fo_status,fo_row) => {
-            this.Users_Class.change(user_id, { 
-                "id": user_id,
-                "events": 
-                [ 
-                    {
-                        "name": "like_add",
-                        "value": true
-                    },
-                    {
-                        "name": "group_join",
-                        "value": true
-                    }
-                ],
-                "is_used": true
-            }, (ch_status,ch_row) => 
-            { 
-              console.log("ch_status:",ch_status)
-              console.log("ch_row",ch_row)  
-              if (ch_status != 'sucess')
-                return callback("error",ch_row)
-              return callback("sucess",fo_row['promocode_name'])
-            })
-        })
-    } else if (chance > 40) {
-        this.find_one({$lt: 4}, (fo_status,fo_row) => {
-            this.Users_Class.change(user_id, { 
-                "id": user_id,
-                "events": 
-                [ 
-                    {
-                        "name": "like_add",
-                        "value": true
-                    },
-                    {
-                        "name": "group_join",
-                        "value": true
-                    }
-                ],
-                "is_used": true
-            }, (ch_status,ch_row) => 
-            { 
-              console.log("ch_status:",ch_status)
-              console.log("ch_row",ch_row)  
-              if (ch_status != 'sucess')
-                return callback("error",ch_row)
-              return callback("sucess",fo_row['promocode_name'])
-            })
-        })
-    }
+
   }
 
 }
