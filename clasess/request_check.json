@@ -6,7 +6,7 @@
         {
             "group_id": {"type": "integer"},
             "type": {"type": "string"},
-            "event_id": {"type": "integer"},
+            "event_id": {"type": "string"},
             "v": {"type": "string"},
             "object": {"type": "object"}
         },
