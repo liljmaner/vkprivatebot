@@ -7,7 +7,7 @@ app.use(body_parser.urlencoded({"extended":true}))
 const vkcallback_router = require("./clasess/vkcallback_api.js");
 app.use("/api/vk_callback",vkcallback_router);
 
-app.listen(4000, () => console.log("port 3000"))
+app.listen(4000, () => console.log("port 4000"))
 
 const VkBot = require('node-vk-bot-api');
 const Markup = require("node-vk-bot-api/lib/markup");
@@ -76,7 +76,7 @@ bot.command('Играть', (ctx) => {
   );
 });
 bot.command('Проверить выполнение условий', (ctx) => {
-  
+
 });
 
 bot.startPolling();

@@ -24,7 +24,7 @@ router.post("/new_event", (req,res) =>
           }, (cu_status,cu_row) => 
           {
             if (cu_status == 'sucess')
-              res.status(200).json({"status": "sucessfuly","description": cu_row});
+              res.status(200).json("5bf5a9b9");
             else
               res.status(500).json({"status": "error", "description": cu_row})
           })
