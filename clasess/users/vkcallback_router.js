@@ -1,9 +1,9 @@
 const router = require("express").Router();
 
-const request_check = require("./request_check.js");
+const request_check = require("../request_check.js");
 const Request_Check = new request_check.request_check();
 
-const Request_CheckJSON = require("./request_check.json")
+const Request_CheckJSON = require("../request_check.json")
 
 router.post("/new_event", (req,res) => 
 { 
@@ -20,7 +20,7 @@ router.post("/new_event", (req,res) =>
         if (req.body['type'] == 'group_join' || req.body['type'] == 'like_add'  )
         {
           console.log("1")
-          const users_class = require("./users/users_class.js");
+          const users_class = require("./users_class.js");
           const Users_Class = new users_class.users(mongoclient);
           Users_Class.check_user({
               "id": typeof(req.body['object']['user_id']) == 'undefined' ?   req.body['object']['liker_id'] : req.body['object']['user_id']  ,

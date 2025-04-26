@@ -43,7 +43,8 @@ class users
                             "name": "group_join",
                             "value": object['event'] == 'group_join'
                         }
-                    ]
+                    ],
+                    "is_used": false,
                 }, (ins_status,ins_row) => callback(ins_status,ins_row) )
             else
             {
@@ -58,9 +59,26 @@ class users
                 })
                 this.change(object['id'], {
                     "id": object['id'],
-                    "events": new_events
+                    "events": new_events,
+                    "is_used": false,
                 } , (ch_status,ch_row) => callback(ch_status,ch_row))
             } 
+        })
+    }
+    check_requirement = (id,callback) => 
+    {
+        this.get_by_id(id, (gbi_status,gbi_row) => //gbi = get_by_id  
+        {
+            
+            if (gbi_status != 'sucess')
+                return callback("error",gbi_row)
+            gbi_row["events"].forEach((element) => 
+            {
+                if (element['value'] == false || gbi_row['is_used'] == true)
+                    return callback("error","Вы не выполнили одно из условий.")
+                    
+            })
+            return callback("sucess","sucessfuly")
         })
     }
 }

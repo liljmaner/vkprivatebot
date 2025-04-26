@@ -3,12 +3,13 @@
     "events": 
     [ 
         {
-            "name": "is_liked",
+            "name": "like_add",
             "value": false
         },
         {
-            "name": "is_subscribed",
+            "name": "group_join",
             "value": false
         }
-    ]
+    ],
+    "is_used": false
 }
