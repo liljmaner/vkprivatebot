@@ -23,6 +23,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
     const Promocodes_Class = new promocodes_class.promocodes_class(mongoclient)
     const bot = new VkBot('vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ');
     bot.command('/start', (ctx) => {
+    console.log(ctx)
     ctx.reply('Привет, я Кленушка🍁\nМы даем шанс получить индивидуальную скидку на проживание в период майских праздников. ', null, Markup
         .keyboard([
           'Получить скидку',
@@ -69,33 +70,38 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
       {
         if (status == 'sucess')
         {
-
+          console.log("1")
           Promocodes_Class.get_random(ctx['message']['from_id'],(gr_status,gr_row) => 
           {
               if (gr_status == 'error')
+              {
                 ctx.reply(`На сервере произошла ошибка!`, null, Markup
                   .keyboard([
                     'Проверить выполнение условий'
                   ], { columns: 1 })
                   .inline(),
                 );
+              }
               else
+              {
                 ctx.reply(`Вот ваш промокод: ${gr_row}`, null, Markup
-                .keyboard([
-                  'Проверить выполнение условий'
-                ], { columns: 1 })
-                .inline(),
-               );
+                  .keyboard([
+                    'Проверить выполнение условий'
+                  ], { columns: 1 })
+                  .inline(),
+                 );
+              }
           })
         }
         else
-        ctx.reply(description, null, Markup
-              .keyboard([
-                'Проверить выполнение условий'
-              ], { columns: 1 })
-              .inline(),
-            );
-
+        {
+          ctx.reply(description, null, Markup
+            .keyboard([
+              'Проверить выполнение условий'
+            ], { columns: 1 })
+            .inline(),
+          );
+        }
       })
     });
 
