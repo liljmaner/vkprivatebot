@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@vk-io/hear": "^1.1.1",
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "jsonschema": "^1.5.0",
+    "markup": "^0.0.4",
+    "mongodb": "^6.16.0",
+    "node-vk-bot-api": "^3.5.0",
+    "vk-io": "^4.9.1"
+  }
+}

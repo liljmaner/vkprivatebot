@@ -1,0 +1,14 @@
+{
+    "id": "",
+    "events": 
+    [ 
+        {
+            "name": "is_liked",
+            "value": false
+        },
+        {
+            "name": "is_subscribed",
+            "value": false
+        }
+    ]
+}
