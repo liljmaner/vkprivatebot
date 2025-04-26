@@ -21,7 +21,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
 
     const promocodes_class = require("./clasess/promocodes/promocodes_class.js");
     const Promocodes_Class = new promocodes_class.promocodes_class(mongoclient)
-    const bot = new VkBot('vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ');
+    const bot = new VkBot('vk1.a.V1W7Tla6ikQIk65ADcZFgC6xZLZRm2JR8cWY4JhyxaJKPkFywl9IU5ZBJaYjiy3pBiFUxPIKqIZpq22eFSBb1fCA90Msu1gB7RB9CgQo9eTyUhnA2IOwOc_LKx3KiLwFE5hohYNzieS9MPEkOVAq0ZRZhGykcu5rtckJY4XIwLHI1nLet9CI4sxlrTzcG2TBoKjJiCwCpfvceycCA0fKtA');
     bot.command('/start', (ctx) => {
     ctx.reply('Привет, я Кленушка🍁\nМы даем шанс получить индивидуальную скидку на проживание в период майских праздников. ', null, Markup
         .keyboard([
