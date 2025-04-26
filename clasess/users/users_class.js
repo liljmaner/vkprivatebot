@@ -74,10 +74,13 @@ class users
                 return callback("error",gbi_row)
             gbi_row["events"].forEach((element) => 
             {
-                if (element['value'] == false || gbi_row['is_used'] == true)
+                if (element['value'] == false)
                     return callback("error","Вы не выполнили одно из условий.")
                     
             })
+            if (gbi_row['is_used'] == true) 
+                return callback("error","Вы уже получили свой промокод")
+
             return callback("sucess","sucessfuly")
         })
     }
