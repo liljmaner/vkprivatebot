@@ -16,11 +16,15 @@ router.post("/new_event", (req,res) =>
       mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
       .then((mongoclient) => 
       { 
+        console.log(req.body['type'])
+        if (req.body['type'] == 'group_join' || req.body['type'] == 'like_add'  )
+        {
+          console.log("1")
           const users_class = require("./users/users_class.js");
           const Users_Class = new users_class.users(mongoclient);
           Users_Class.check_user({
-              "id": req.body['object']['user_id'],
-              "event": req.body['type']
+              "id": typeof(req.body['object']['user_id']) == 'undefined' ?   req.body['object']['liker_id'] : req.body['object']['user_id']  ,
+              "event": req.body['type'],
           }, (cu_status,cu_row) => 
           {
             if (cu_status == 'sucess')
@@ -29,6 +33,13 @@ router.post("/new_event", (req,res) =>
               res.status(500).json({"status": "error", "description": cu_row})
           })
           console.log(req.body);
+        }
+        else 
+        {
+          console.log("2")
+          res.status(200).json("5bf5a9b9");
+
+        }
       })
       .catch((err) => res.status(500).json({"status": "error", "description": err}))
     }

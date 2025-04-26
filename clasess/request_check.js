@@ -7,7 +7,7 @@ class request_check
   Check = (check_object , object_to_check,callback) => 
   {
    const valid_obj = this.validator.validate(object_to_check,check_object)//object_to_check,check_object
-   console.log(valid_obj);
+   console.log(valid_obj.valid);
    if (valid_obj.valid == true)
      return callback("sucess")
    return callback("error")

@@ -41,7 +41,7 @@ class users
                         },
                         {
                             "name": "is_subscribed",
-                            "value": object['event'] == 'is_subscribed'
+                            "value": object['event'] == 'group_join'
                         }
                     ]
                 }, (ins_status,ins_row) => callback(ins_status,ins_row) )

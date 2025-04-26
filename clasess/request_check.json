@@ -12,4 +12,4 @@
         },
         "required":["type","event_id","v","object","group_id"]
     }
-}
+} 
