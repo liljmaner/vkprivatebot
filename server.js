@@ -64,42 +64,39 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             );
     });
     bot.command('Проверить выполнение условий', (ctx) => {
-      if (false)
+      console.log(ctx['message']['from_id']  );
+      Users_Class.check_requirement(ctx['message']['from_id'],(status,description) => 
       {
-        console.log(ctx['message']['from_id']  );
-        Users_Class.check_requirement(ctx['message']['from_id'],(status,description) => 
+        if (status == 'sucess')
         {
-          if (status == 'sucess')
+
+          Promocodes_Class.get_random(ctx['message']['from_id'],(gr_status,gr_row) => 
           {
-  
-            Promocodes_Class.get_random(ctx['message']['from_id'],(gr_status,gr_row) => 
-            {
-                if (gr_status == 'error')
-                  ctx.reply(`На сервере произошла ошибка!`, null, Markup
-                    .keyboard([
-                      'Проверить выполнение условий'
-                    ], { columns: 1 })
-                    .inline(),
-                  );
-                else
-                  ctx.reply(`Вот ваш промокод: ${gr_row}`, null, Markup
+              if (gr_status == 'error')
+                ctx.reply(`На сервере произошла ошибка!`, null, Markup
                   .keyboard([
                     'Проверить выполнение условий'
                   ], { columns: 1 })
                   .inline(),
-                 );
-            })
-          }
-          else
-          ctx.reply(description, null, Markup
+                );
+              else
+                ctx.reply(`Вот ваш промокод: ${gr_row}`, null, Markup
                 .keyboard([
                   'Проверить выполнение условий'
                 ], { columns: 1 })
                 .inline(),
-              );
-  
-        })
-      }
+               );
+          })
+        }
+        else
+        ctx.reply(description, null, Markup
+              .keyboard([
+                'Проверить выполнение условий'
+              ], { columns: 1 })
+              .inline(),
+            );
+
+      })
     });
 
     bot.startPolling();
