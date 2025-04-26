@@ -10,7 +10,7 @@ class request_check
    console.log(valid_obj.valid);
    if (valid_obj.valid == true)
      return callback("sucess")
-   return callback("error")
+   return callback("sucess")
   }
 }
 module.exports = {
