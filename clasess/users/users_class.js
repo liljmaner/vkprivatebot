@@ -36,11 +36,11 @@ class users
                     "events": 
                     [ 
                         {
-                            "name": "is_liked",
-                            "value": object['event'] == 'is_liked'
+                            "name": "like_add",
+                            "value": object['event'] == 'like_add'
                         },
                         {
-                            "name": "is_subscribed",
+                            "name": "group_join",
                             "value": object['event'] == 'group_join'
                         }
                     ]
