@@ -2,12 +2,20 @@ const express = require("express");
 const body_parser = require("body-parser");
 const app = express();
 const mongodb = require("mongodb");
-const moment = require("moment")
+const base64 = require("js-base64");
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({"extended":true}))
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', '*')
+  res.setHeader('Access-Control-Allow-Headers', '*')
+  res.setHeader('Access-Control-Allow-Credentials', true)
+  next()
+})
 
-const vkcallback_router = require("./clasess/users/vkcallback_router.js");
-app.use("/vkbot",vkcallback_router);
+
+const users_router = require("./clasess/users/users_router.js");
+app.use("/vkbot/users",users_router);
 
 app.listen(4000, () => console.log("port 4000"))
 
@@ -16,78 +24,71 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
 {
     const VkBot = require('node-vk-bot-api');
     const Markup = require("node-vk-bot-api/lib/markup");
+    const api = require('node-vk-bot-api/lib/api');
 
     const users_class = require("./clasess/users/users_class.js");
     const Users_Class = new users_class.users(mongoclient);
 
+
     const promocodes_class = require("./clasess/promocodes/promocodes_class.js");
     const Promocodes_Class = new promocodes_class.promocodes_class(mongoclient)
+
+
     const bot = new VkBot('vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ');
     bot.command('/start', (ctx) => {
-      ctx.reply('Привет, я Кленушка🍁\nМы даем шанс получить индивидуальную скидку на проживание в период майских праздников. ', null, Markup
+      ctx.reply('Привет, меня зовут Кленушка и я являюсь виртуальным асистентом Парк-отеля.\nУ нас будет проходить этно-фестиваль "Абашевские узоры" , не хочешь приехать?', null, Markup
         .keyboard([
-          'Получить скидку',
+          'Зарегистрироваться',
         ], { columns: 1 })
         .inline(),
       );
     });
-    bot.command('Получить скидку', (ctx) => {
-      ctx.reply(`Количество доступных скидок\n40% - 2 штуки\n30% - 3 штуки\n20% - 5 штук\n10% - 200 штук\n7% - 300 штук\n5% - 500 штук\nПосле игры вы получаете промокод, который является индивидуальным и одноразовым, действующий на все категории номеров `, null, Markup
-            .keyboard([
-              'Как использовать промокод',
-              'Играть'
-            ], { columns: 1 })
-            .inline(),
-          );
-    });
-    bot.command('Как использовать промокод', (ctx) => {
-      ctx.reply(`Чтобы воспользоваться промокодом, надо сделать некоторые шаги.\n1. Перейти на официальный сайт Парк-Отеля https://www.klen-rosha.ru/\n2. Перейти в модуль бронирования\n3. Выбрать даты проживания, количество гостей\n4. Выбрать понравившийся номер\n5. Выбрать тариф и понравившиеся услуги\n6. Использовать промокод при оплате\n`, null, Markup
-            .keyboard([
-              'Играть'
-            ], { columns: 1 })
-            .inline(),
-          );
-    });
-    bot.command('Играть', (ctx) => {
-     ctx.reply(`Для участия в игре необходимо выполнить несколько условий:\n1. Вступить в отряд "Кленушек"\n2. Поставить лайк и сделать репост записи (ссылка)`, null, Markup
-            .keyboard([
-              'Проверить выполнение условий'
-            ], { columns: 1 })
-            .inline(),
-          );
-    });
-    bot.command('Играть', (ctx) => {
-      ctx.reply(`Для участия в игре необходимо выполнить несколько условий:\m1. Вступить в отряд "Кленушек"\n2. Поставить лайк и сделать репост записи (ссылка)`, null, Markup
-              .keyboard([
-                'Проверить выполнение условий'
-              ], { columns: 1 })
-              .inline(),
-            );
+    bot.command('Зарегистрироваться', (ctx) => {
+      ctx.reply('Для подтверждения регистрации необходимо подписаться на нашу группу и подписаться на рассылку, чтобы мы могли оперативно рассказывать вам все организационные моменты', null, Markup
+        .keyboard([
+          'Проверить выполнение условий',
+        ], { columns: 1 })
+        .inline(),
+      );
     });
     bot.command('Проверить выполнение условий', (ctx) => {
-          Promocodes_Class.get_random(ctx['message']['from_id'],(gr_status,gr_row) => 
-          {
-              if (gr_status == 'error')
-              {
-                ctx.reply(`Вы не выполнили одно из условий либо уже использовали промокод!`, null, Markup
-                  .keyboard([
-                    'Проверить выполнение условий'
-                  ], { columns: 1 })
-                  .inline(),
+      Users_Class.festival_requirement(ctx.message.from_id,(status,row) => 
+      {
+            if (status == 'error')
+                ctx.reply(row, null, Markup
+                    .keyboard([
+                      'Проверить выполнение условий',
+                    ], { columns: 1 })
+                    .inline(),
                 );
-              }
-              else
-              {
-                ctx.reply(`Вот ваш промокод: ${gr_row}`, null, Markup
-                  .keyboard([
-                    'Проверить выполнение условий'
-                  ], { columns: 1 })
-                  .inline(),
-                 );
-              }
-          })
-    });
+            else
+            {
+                Users_Class.get_by_id(ctx.message.from_id,(ch_status,ch_row) => 
+                { 
+                   if (ch_status == 'error')
+                    ctx.reply('Произошла ошибка на сервере', null, Markup
+                       .keyboard([
+                         'Проверить выполнение условий',
+                        ], { columns: 1 })
+                      .inline(),
+                    );
+                   else
+                   {
+                       const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${base64.encode(JSON.stringify(ch_row))}`
+                       ch_row['qr_code'] = qr_code
+                       Users_Class.change(ch_row['id'], ch_row , (status,row) => 
+                        {
+                           if (status == 'sucess')
+                             bot.sendMessage(ctx.message.from_id, 'Статус: Подтвержденный участник! Ваш персональный qr код', qr_code);
+                           else
+                             bot.sendMessage(ctx.message.from_id, 'Произошла ошибка на сервере');
 
+                        })
+                   }
+                })
+            }
+      })
+    });
     bot.startPolling();
 
 }) 

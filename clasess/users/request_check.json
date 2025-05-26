@@ -1,0 +1,36 @@
+{
+    "new_event": 
+    {
+        "type": "object",
+        "properties": 
+        {
+            "group_id": {"type": "integer"},
+            "type": {"type": "string"},
+            "event_id": {"type": "string"},
+            "v": {"type": "string"},
+            "object": {"type": "object"}
+        },
+        "required":["type","event_id","v","object"]
+    },
+    "insert_newsletter": 
+    {
+        "type": "object",
+        "properties":
+        {
+          "sign": {"type":"string"},
+          "vk_access_token_settings": {"type":"string"},
+          "vk_app_id": {"type":"integer"},
+          "vk_are_notifications_enabled": {"type":"integer"},
+          "vk_is_app_user": {"type":"integer"},
+          "vk_is_favorite": {"type":"integer"},
+          "vk_language": {"type":"string"},
+          "vk_platform": {"type":"string"},
+          "vk_ref": {"type":"string"},
+          "vk_ts": {"type":"integer"},
+          "vk_user_id": {"type":"integer"},
+          "photo": {"type":"string"},
+          "name": {"type":"string"}
+        },
+        "required": ["sign","vk_access_token_settings","vk_app_id","vk_are_notifications_enabled","vk_is_app_user","vk_is_favorite","vk_language","vk_platform","vk_ref","vk_ts","vk_user_id","photo","name"]
+    }
+} 

@@ -7,7 +7,7 @@ class promocodes_class
     const users_class = require("../users/users_class.js")
     this.Users_Class = new users_class.users(mongoclient)
   }
-  find_one = (chance,callback) => 
+  get_by_chance = (chance,callback) => 
   {
     this.collection.findOne({"chance": chance})
     .then((row) => callback("sucess",row))
@@ -21,7 +21,7 @@ class promocodes_class
           {
             const chance = Math.floor(Math.random() * 101);
             if (chance <= 3) { // p2c row
-               this.find_one({$lt: 4}, (fo_status,fo_row) => {
+               this.get_by_chance({$lt: 4}, (fo_status,fo_row) => {
                 this.Users_Class.change(user_id, { 
                     "id": user_id,
                     "events": 
@@ -46,7 +46,7 @@ class promocodes_class
                 })
                } )
             } else if (chance <= 7) {
-                this.find_one({$lt: 4}, (fo_status,fo_row) => {
+                this.get_by_chance({$gt: 4, $lt: 7}, (fo_status,fo_row) => {
                     this.Users_Class.change(user_id, { 
                         "id": user_id,
                         "events": 
@@ -71,7 +71,7 @@ class promocodes_class
                     })
                    } )
             } else if (chance <= 40) {
-                this.find_one({$lt: 4}, (fo_status,fo_row) => {
+                this.get_by_chance({$gt: 7, $lt: 40}, (fo_status,fo_row) => {
                     this.Users_Class.change(user_id, { 
                         "id": user_id,
                         "events": 
@@ -96,7 +96,7 @@ class promocodes_class
                     })
                 })
             } else if (chance > 40) {
-                this.find_one({$lt: 4}, (fo_status,fo_row) => {
+                this.get_by_chance({$gt: 40}, (fo_status,fo_row) => {
                     this.Users_Class.change(user_id, { 
                         "id": user_id,
                         "events": 
