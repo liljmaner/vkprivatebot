@@ -160,16 +160,23 @@ class users
             
             if (gbi_status != 'sucess')
                 return callback("error",gbi_row)
-            gbi_row["events"].forEach((element) => 
+            if (gbi_row != null && typeof(gbi_row) != 'undefined')
             {
-                if (element['value'] == false && element['name'] != 'like_add')
-                    return callback("error","Вы не выполнили одно из условий.")
-                    
-            })
-            if (gbi_row['festival_users'] == true ) 
-                return callback("error","Вы уже учавствуете в фестивале ")
+                gbi_row["events"].forEach((element) => 
+                {
+                    if (element['value'] == false && element['name'] != 'like_add')
+                        return callback("error","Вы не выполнили одно из условий.")
+                        
+                })
+                if (gbi_row['festival_users'] == true ) 
+                    return callback("error","Вы уже учавствуете в фестивале ")
 
-            return callback("sucess","sucessfuly")
+                return callback("sucess","sucessfuly")
+            }
+            else
+                return callback("error","Вы не выполнили одно из условий.")
+
+
         })
     }
 
