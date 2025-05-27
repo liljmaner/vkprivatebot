@@ -12,7 +12,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
    const Users_Class = new users_class.users(mongoclient);
   router.post("/new_event", (req,res) => 
   { 
-      Request_Check.Check(Request_CheckJSON.new_event,req.body,false,(status) => 
+      Request_Check.Check(Request_CheckJSON.new_event,req.body,(status) => 
       {
         if (status == 'sucess')
         {
@@ -46,7 +46,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
   })
   router.post("/insert_newsletter", (req,res) => 
   { 
-      Request_Check.Check(Request_CheckJSON.insert_newsletter,req.body,true,(status) => 
+      Request_Check.Check(Request_CheckJSON.insert_newsletter,req.body,(status) => 
       {
         if (status == 'sucess')
         {

@@ -2,7 +2,7 @@ class Vk_Funcs
 { 
      constructor()
      {
-         this.crypto = require('crypto');
+        this.crypto = require("crypto")
      }
      verifyLaunchParams = (sign,queryParams, secretKey)  => {    
         /**

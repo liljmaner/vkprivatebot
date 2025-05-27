@@ -77,6 +77,7 @@ class users
     {
           this.get_by_id(id, ( gbi_status,gbi_row ) => 
           {
+              console.log("gbi_row:" , gbi_row);
               if (gbi_status == 'error')
                 return  callback('error',gbi_row)
               else
