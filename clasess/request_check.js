@@ -10,10 +10,7 @@ class request_check
   {
    const valid_obj = this.validator.validate(object_to_check,check_object)//object_to_check,check_object
    if (valid_obj.valid == true)
-   {
-                return callback("sucess")
-
-   }
+    return callback("sucess")
    else 
      return callback("false")
   }

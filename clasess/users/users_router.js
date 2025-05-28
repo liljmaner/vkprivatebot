@@ -27,7 +27,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
               }, (cu_status,cu_row) => 
               {
                 if (cu_status == 'sucess')
-                  res.status(200).send("ffe2335e");
+                  res.status(200).send("a2ff670e");
                 else
                   res.status(500).json({"status": "error", "description": cu_row})
               })
@@ -36,7 +36,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             else 
             {
               console.log("2")
-              res.status(200).send("ffe2335e");
+              res.status(200).send("a2ff670e");
     
             }
         }
