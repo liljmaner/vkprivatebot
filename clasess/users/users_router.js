@@ -41,7 +41,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             }
         }
         else
-           res.status(500).json({"status": "error", "description": "request check error"})
+            res.status(200).send("a2ff670e");
       })
   })
   router.post("/insert_newsletter", (req,res) => 
