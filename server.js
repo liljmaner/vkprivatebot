@@ -3,6 +3,10 @@ const body_parser = require("body-parser");
 const app = express();
 const mongodb = require("mongodb");
 const base64 = require("js-base64");
+const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
+const path = require('path');
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({"extended":true}))
 app.use(function (req, res, next) {
@@ -24,18 +28,12 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
 {
     const VkBot = require('node-vk-bot-api');
     const Markup = require("node-vk-bot-api/lib/markup");
-    const api = require('node-vk-bot-api/lib/api');
-
     const users_class = require("./clasess/users/users_class.js");
     const Users_Class = new users_class.users(mongoclient);
-
-
-    const promocodes_class = require("./clasess/promocodes/promocodes_class.js");
-    const Promocodes_Class = new promocodes_class.promocodes_class(mongoclient)
-
-
     const bot = new VkBot('vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ');
-    bot.command('/start', (ctx) => {
+    const api = require('node-vk-bot-api/lib/api');
+
+    bot.command('Начать', (ctx) => {
       ctx.reply('Привет, меня зовут Кленушка и я являюсь виртуальным асистентом Парк-отеля.\nУ нас будет проходить этно-фестиваль "Абашевские узоры" , не хочешь приехать?', null, Markup
         .keyboard([
           'Зарегистрироваться',
@@ -80,7 +78,46 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                        Users_Class.change(ch_row['id'], ch_row , (status,row) => 
                         {
                            if (status == 'sucess')
-                             bot.sendMessage(ctx.message.from_id, 'Статус: Подтвержденный участник! Ваш персональный qr код', qr_code);
+                           {
+                              api('photos.getMessagesUploadServer', {
+                                peer_id: ctx.message.from_id,
+                                access_token: 'vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ',
+                              })
+                              .then((getserver_row) => 
+                              {
+                                axios({
+                                    method: 'get',
+                                    url: qr_code,
+                                    responseType: 'stream', // Указываем, что ожидаем поток
+                                })
+                                .then((image_response) => 
+                                {
+                                    const form = new FormData();
+                                    form.append('photo', image_response.data, { filename: 'image.png' }); // Можно указать имя файла
+                                    console.log(form)
+                                    console.log(getserver_row['response'])
+                                      // Отправляем POST-запрос с формой
+                                      axios.post(getserver_row['response']['upload_url'], form, {
+                                        headers: {
+                                            ...form.getHeaders(),
+                                        },
+                                    })
+                                    .then((uploadserver_row) => {
+                                        api('photos.saveMessagesPhoto', {
+                                          photo: uploadserver_row['data']['photo'],
+                                          server: uploadserver_row['data']['server'],
+                                          hash: uploadserver_row['data']['hash'],
+                                          access_token: 'vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ',
+                                        })
+                                        .then((svm_row) => 
+                                        {
+                                        console.log(svm_row['response'][0]['sizes'])
+                                        bot.sendMessage(ctx.message.from_id, 'Вот ваш qr-code', `photo${svm_row['response'][0]['owner_id']}_${svm_row['response'][0]['id']}`);
+                                        })
+                                    })
+                                })
+                              })
+                           }
                            else
                              bot.sendMessage(ctx.message.from_id, 'Произошла ошибка на сервере');
 

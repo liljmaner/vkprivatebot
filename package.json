@@ -3,6 +3,7 @@
     "@vk-io/hear": "^1.1.1",
     "axios": "^1.9.0",
     "body-parser": "^2.2.0",
+    "easyvk": "^2.8.2",
     "express": "^5.1.0",
     "form-data": "^4.0.2",
     "js-base64": "^3.7.7",

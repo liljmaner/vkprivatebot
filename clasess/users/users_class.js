@@ -166,8 +166,8 @@ class users
                 gbi_row["events"].forEach((element) => 
                 {
                     if (element['value'] == false && element['name'] != 'like_add')
-                        return callback("error","Вы не выполнили одно из условий.")
-                        
+                        return callback("error",`Вы не ${element == 'group_join' ? 'подписались на группу' : "подписались на расссылку"}`)
+                    
                 })
                 if (gbi_row['festival_users'] == true ) 
                     return callback("error","Вы уже учавствуете в фестивале ")
