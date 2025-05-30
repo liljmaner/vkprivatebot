@@ -64,6 +64,8 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                 );
             else
             {
+                console.log("festival_requirement_status:" ,status)
+                console.log("festival_requirment_row :",row)
                 Users_Class.get_by_id(ctx.message.from_id,(ch_status,ch_row) => 
                 { 
                   if (ch_status == 'error')
