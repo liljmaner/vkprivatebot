@@ -186,16 +186,12 @@ class users
                 return callback("error",gbi_row)
             if (gbi_row != null && typeof(gbi_row) != 'undefined')
             {
-                gbi_row["events"].forEach((element) => 
-                {
-                    if (element['value'] == false && element['name'] != 'like_add')
-                        return callback("error",`Вы не ${element['name'] == 'group_join' ? "подписались на группу" : "подписались на рассылку"}`)
-                    
-                })
-                if (gbi_row['festival_users'] == true ) 
-                    return callback("error","Вы уже учавствуете в фестивале ")
-                console.log("festival_req_gbi_row:", gbi_row)
-                return callback("sucess","sucessfuly")
+                if (gbi_row['events']['newsletter_allowed'] == true && gbi_row['events']['group_join'] == true && gbi_row['festival_users'] == false)
+                    return callback("sucess",'sucessfuly')
+                else if (gbi_row['festival_users'] == true)
+                    return callback("error","Вы уже участник фестиваля")
+                else
+                    return callback("error", `Вы не ${gbi_row['events']['newsletter_allowed'] == true ? 'подписались на группу' : 'подписались на рассылку'}`)
             }
             else
                 return callback("error","Вы не выполнили оба условия.")
