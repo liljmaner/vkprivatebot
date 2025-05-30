@@ -73,7 +73,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
     hearCommand('Начать', async (context) => {
         await context.send({
             message: `Привет, меня зовут Кленушка и я являюсь виртуальным асистентом Парк-отеля.\nУ нас будет проходить этно-фестиваль "Абашевские узоры" , не хочешь приехать?`,
-            keyboard: Keyboard.builder()
+            keyboard: Keyboard.builder().inline()
                 .textButton({
                     label: 'Зарегистрироваться',
                     payload: {
@@ -93,7 +93,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
     hearCommand('Зарегистрироваться', async (context) => {
         await context.send({
             message: `Для подтверждения регистрации необходимо подписаться на нашу группу и подписаться на рассылку, чтобы мы могли оперативно рассказывать вам все организационные моменты`,
-            keyboard: Keyboard.builder()
+            keyboard: Keyboard.builder().inline()
                 .textButton({
                     label: 'Проверить выполнение условий',
                     payload: {
@@ -115,7 +115,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             if (status == 'sucess')
               context.send({
                     message: `Вы успешно подписались на рассылку`,
-                    keyboard: Keyboard.builder()
+                    keyboard: Keyboard.builder().inline()
                         .textButton({
                             label: 'Проверить выполнение условий',
                             payload: {
@@ -127,7 +127,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
               else
                   context.send({
                         message: `Произошла ошибка на сервере`,
-                        keyboard: Keyboard.builder()
+                        keyboard: Keyboard.builder().inline()
                             .textButton({
                                 label: 'Проверить выполнение условий',
                                 payload: {
