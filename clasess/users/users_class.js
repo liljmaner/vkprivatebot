@@ -186,12 +186,12 @@ class users
                 return callback("error",gbi_row)
             if (gbi_row != null && typeof(gbi_row) != 'undefined')
             {
-                if (gbi_row['events']['newsletter_allowed'] == true && gbi_row['events']['group_join'] == true && gbi_row['festival_users'] == false)
+                if (gbi_row['events'][2]['value'] == true == true && gbi_row['events'][1]['value'] == true && gbi_row['festival_users'] == false)
                     return callback("sucess",'sucessfuly')
                 else if (gbi_row['festival_users'] == true)
                     return callback("error","Вы уже участник фестиваля")
                 else
-                    return callback("error", `Вы не ${gbi_row['events'][2]['newsletter_allowed'] == true ? 'подписались на группу' : 'подписались на рассылку'}`)
+                    return callback("error", `Вы не ${gbi_row['events'][2]['value'] == true ? 'подписались на группу' : 'подписались на рассылку'}`)
             }
             else
                 return callback("error","Вы не выполнили оба условия.")
