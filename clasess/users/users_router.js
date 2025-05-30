@@ -62,7 +62,42 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
            res.status(500).json({"status": "error", "description": "request check error"})
       })
   })
-  
+  router.post("/get_by_id", (req,res) => 
+  { 
+      Request_Check.Check(Request_CheckJSON.get_by_id,req.body,(status) => 
+      {
+        if (status == 'sucess')
+        {
+          Users_Class.get_by_mongoid(req.body['id'], (status,row) => 
+          {
+                if (status == 'sucess')
+                  res.status(200).send({"status": status, "description": row} );
+                else
+                  res.status(500).json({"status": status, "description": row})
+          })
+        }
+        else
+           res.status(500).json({"status": "error", "description": "request check error"})
+      })
+  })
+  router.post("/change_feststatus", (req,res) => 
+  { 
+      Request_Check.Check(Request_CheckJSON.change_feststatus,req.body,(status) => 
+      {
+        if (status == 'sucess')
+        {
+          Users_Class.change_feststatus(req.body['id'],req.body['status'], (status,row) => 
+          {
+                if (status == 'sucess')
+                  res.status(200).send({"status": status, "description": row} );
+                else
+                  res.status(500).json({"status": status, "description": row})
+          })
+        }
+        else
+           res.status(500).json({"status": "error", "description": "request check error"})
+      })
+  })
 })
 .catch((err) => console.log("[mongodb_connecterror]:",err))
 

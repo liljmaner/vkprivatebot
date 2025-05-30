@@ -4,7 +4,8 @@ class users
     constructor(mongoclient)
     {
       const db = mongoclient.db("vkrandom_bot");
-      this.collection = db.collection("users")
+      this.collection = db.collection("users");
+      this.mongodb = require("mongodb")
     }
     insert = (object,callback) => 
     {
@@ -18,11 +19,33 @@ class users
         .then((row) => callback("sucess",row))
         .catch((err) => callback("error",err) ) 
     } 
+    get_by_mongoid = (mongo_id, callback) => 
+    {
+         this.collection.findOne({"_id": new this.mongodb.ObjectId(mongo_id)})
+        .then((row) => callback("sucess",row))
+        .catch((err) => callback("error",err) ) 
+    }
     change = (id,object,callback) => 
     {
       this.collection.replaceOne({"id":id},object)
       .then((row) => callback("sucess",row))
       .catch((err) => callback("error",err) ) 
+    }
+    change_feststatus = (id,status,callback) => 
+    {
+        this.get_by_mongoid(id,(gbmi_status,gbmi_row) => 
+        {
+               if (gbmi_status == 'sucess')
+               {
+                  gbmi_row['festival_users'] = status;
+                  this.change(gbmi_row['id'], gbmi_row, (ch_status,ch_row) =>
+                  {
+                     return callback(ch_status,gbmi_row)
+                  })
+               }
+               else
+                 return callback("error",gbmi_row)
+        })
     }
     check_user   = (object, callback) => 
     { 
@@ -166,7 +189,7 @@ class users
                 gbi_row["events"].forEach((element) => 
                 {
                     if (element['value'] == false && element['name'] != 'like_add')
-                        return callback("error",`Вы не ${element == 'group_join' ? 'подписались на группу' : "подписались на расссылку"}`)
+                        return callback("error",`Вы не ${element['name'] == 'group_join' ? "подписались на группу" : "подписались на рассылку"}`)
                     
                 })
                 if (gbi_row['festival_users'] == true ) 

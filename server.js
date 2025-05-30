@@ -37,6 +37,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
       ctx.reply('Привет, меня зовут Кленушка и я являюсь виртуальным асистентом Парк-отеля.\nУ нас будет проходить этно-фестиваль "Абашевские узоры" , не хочешь приехать?', null, Markup
         .keyboard([
           'Зарегистрироваться',
+          'Подписаться на рассылку'
         ], { columns: 1 })
         .inline(),
       );
@@ -45,6 +46,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
       ctx.reply('Для подтверждения регистрации необходимо подписаться на нашу группу и подписаться на рассылку, чтобы мы могли оперативно рассказывать вам все организационные моменты', null, Markup
         .keyboard([
           'Проверить выполнение условий',
+          'Подписаться на рассылку'
         ], { columns: 1 })
         .inline(),
       );
@@ -56,6 +58,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                 ctx.reply(row, null, Markup
                     .keyboard([
                       'Проверить выполнение условий',
+                      'Подписаться на рассылку'
                     ], { columns: 1 })
                     .inline(),
                 );
@@ -125,6 +128,25 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                    }
                 })
             }
+      })
+    });
+    bot.command('Подписаться на рассылку', (ctx) => {
+      Users_Class.insert_newsletter(ctx.message.from_id,(status,row) => 
+      {
+           if (status == 'sucess')
+             ctx.reply('Вы успешно подписались на рассылку', null, Markup
+                       .keyboard([
+                         'Проверить выполнение условий',
+                        ], { columns: 1 })
+                      .inline(),
+              );
+            else
+              ctx.reply('Произошла ошибка на сервере!', null, Markup
+                       .keyboard([
+                         'Проверить выполнение условий',
+                        ], { columns: 1 })
+                      .inline(),
+              );
       })
     });
     bot.startPolling();

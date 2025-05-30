@@ -32,5 +32,25 @@
           "name": {"type":"string"}
         },
         "required": ["sign","vk_access_token_settings","vk_app_id","vk_are_notifications_enabled","vk_is_app_user","vk_is_favorite","vk_language","vk_platform","vk_ref","vk_ts","vk_user_id","photo","name"]
+    },
+    "get_by_id": 
+    {
+        "type": "object",
+        "properties": 
+        {
+            "id": {"type": "string"}
+        },
+        "required":["id"]    
+    },
+    "change_feststatus": 
+    {
+        "type": "object",
+        "properties": 
+        {
+            "id": {"type": "string"},
+            "status": { "type": "boolean" }
+
+        },
+        "required":["id"]    
     }
 } 
