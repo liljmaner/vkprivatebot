@@ -5,6 +5,10 @@ const Request_Check = new request_check.request_check();
 
 const Request_CheckJSON = require("./request_check.json")
 const mongodb = require("mongodb");
+const { API} = require('vk-io');
+const api = new API({
+          token: 'vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ'
+});
 mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
 .then((mongoclient) => 
 {
@@ -68,10 +72,12 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
       {
         if (status == 'sucess')
         {
+
+          console.log("1")
           Users_Class.get_by_mongoid(req.body['id'], (status,row) => 
           {
                 if (status == 'sucess')
-                  res.status(200).send({"status": status, "description": row} );
+                    res.status(200).send({"status": status, "description": row} );
                 else
                   res.status(500).json({"status": status, "description": row})
           })
@@ -89,7 +95,8 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
           Users_Class.change_feststatus(req.body['id'],req.body['status'], (status,row) => 
           {
                 if (status == 'sucess')
-                  res.status(200).send({"status": status, "description": row} );
+                    res.status(200).send({"status": status, "description": row} );
+
                 else
                   res.status(500).json({"status": status, "description": row})
           })

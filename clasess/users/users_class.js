@@ -5,7 +5,11 @@ class users
     {
       const db = mongoclient.db("vkrandom_bot");
       this.collection = db.collection("users");
-      this.mongodb = require("mongodb")
+      this.mongodb = require("mongodb");
+      const { API} = require('vk-io');
+      this.api = new API({
+          token: 'vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ'
+     });
     }
     insert = (object,callback) => 
     {
@@ -22,7 +26,17 @@ class users
     get_by_mongoid = (mongo_id, callback) => 
     {
          this.collection.findOne({"_id": new this.mongodb.ObjectId(mongo_id)})
-        .then((row) => callback("sucess",row))
+        .then((row) => {
+              this.api.call('users.get',{
+                        user_ids: row['id'],
+                        fields: 'photo_200'
+               })
+              .then((ug_row) => {
+                    row['name'] = `${ug_row[0]['first_name']}  ${ug_row[0]['last_name']}`;
+                    row['photo_200'] = ug_row[0]['photo_200'];
+                    callback("sucess",row)
+                  })
+        })
         .catch((err) => callback("error",err) ) 
     }
     change = (id,object,callback) => 
@@ -38,6 +52,7 @@ class users
                if (gbmi_status == 'sucess')
                {
                   gbmi_row['festival_users'] = status;
+                  delete gbmi_row['_id']
                   this.change(gbmi_row['id'], gbmi_row, (ch_status,ch_row) =>
                   {
                      return callback(ch_status,gbmi_row)
