@@ -191,7 +191,7 @@ class users
                 else if (gbi_row['festival_users'] == true)
                     return callback("error","Вы уже участник фестиваля")
                 else
-                    return callback("error", `Вы не ${gbi_row['events']['newsletter_allowed'] == true ? 'подписались на группу' : 'подписались на рассылку'}`)
+                    return callback("error", `Вы не ${gbi_row['events'][2]['newsletter_allowed'] == true ? 'подписались на группу' : 'подписались на рассылку'}`)
             }
             else
                 return callback("error","Вы не выполнили оба условия.")
