@@ -26,55 +26,149 @@ app.listen(4000, () => console.log("port 4000"))
 mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
 .then((mongoclient) => 
 {
-    const VkBot = require('node-vk-bot-api');
-    const Markup = require("node-vk-bot-api/lib/markup");
+    const { VK , Keyboard,Upload,API,APIRequest  } = require('vk-io');
+    const { HearManager } = require('@vk-io/hear');
     const users_class = require("./clasess/users/users_class.js");
     const Users_Class = new users_class.users(mongoclient);
-    const bot = new VkBot('vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ');
-    const api = require('node-vk-bot-api/lib/api');
+    const vk = new VK({
+        token: 'vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ'
+    });
+    const api = new API({
+          token: 'vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ'
+    });
+    const upload = new Upload({
+        api
+    });
+    const hearManager = new HearManager();
+    vk.updates.on('message_new', (context, next) => {
+          const { messagePayload } = context;
 
-    bot.command('Начать', (ctx) => {
-      ctx.reply('Привет, меня зовут Кленушка и я являюсь виртуальным асистентом Парк-отеля.\nУ нас будет проходить этно-фестиваль "Абашевские узоры" , не хочешь приехать?', null, Markup
-        .keyboard([
-          'Зарегистрироваться',
-          'Подписаться на рассылку'
-        ], { columns: 1 })
-        .inline(),
-      );
+          context.state.command = messagePayload && messagePayload.command
+              ? messagePayload.command
+              : null;
+
+          return next();
     });
-    bot.command('Зарегистрироваться', (ctx) => {
-      ctx.reply('Для подтверждения регистрации необходимо подписаться на нашу группу и подписаться на рассылку, чтобы мы могли оперативно рассказывать вам все организационные моменты', null, Markup
-        .keyboard([
-          'Проверить выполнение условий',
-          'Подписаться на рассылку'
-        ], { columns: 1 })
-        .inline(),
-      );
+    vk.updates.on('message_new', hearManager.middleware);
+    const hearCommand = (name, conditions, handle) => {
+        if (typeof handle !== 'function') {
+            handle = conditions;
+            conditions = [`${name}`];
+        }
+
+        if (!Array.isArray(conditions)) {
+            conditions = [conditions];
+        }
+
+        hearManager.hear(
+            [
+                (text, { state }) => (
+                    state.command === name
+                ),
+                ...conditions
+            ],
+            handle
+        );
+    };
+    hearCommand('Начать', async (context) => {
+        await context.send({
+            message: `Привет, меня зовут Кленушка и я являюсь виртуальным асистентом Парк-отеля.\nУ нас будет проходить этно-фестиваль "Абашевские узоры" , не хочешь приехать?`,
+            keyboard: Keyboard.builder()
+                .textButton({
+                    label: 'Зарегистрироваться',
+                    payload: {
+                        command: 'Зарегистрироваться'
+                    }
+                })
+                .row()
+                .textButton({
+                    label: 'Подписаться на рассылку',
+                    payload: {
+                        command: 'Подписаться на рассылку'
+                    }
+                })
+
+        });
     });
-    bot.command('Проверить выполнение условий', (ctx) => {
-      Users_Class.festival_requirement(ctx.message.from_id,(status,row) => 
+    hearCommand('Зарегистрироваться', async (context) => {
+        await context.send({
+            message: `Для подтверждения регистрации необходимо подписаться на нашу группу и подписаться на рассылку, чтобы мы могли оперативно рассказывать вам все организационные моменты`,
+            keyboard: Keyboard.builder()
+                .textButton({
+                    label: 'Проверить выполнение условий',
+                    payload: {
+                        command: 'Проверить выполнение условий'
+                    }
+                })
+                .row()
+                .textButton({
+                    label: 'Подписаться на рассылку',
+                    payload: {
+                        command: 'Подписаться на рассылку'
+                    }
+                })
+        });
+    });
+    hearCommand('Подписаться на рассылку', async (context) => {
+        Users_Class.insert_newsletter(context.senderId,(status,row) => 
+        {
+            if (status == 'sucess')
+              context.send({
+                    message: `Вы успешно подписались на рассылку`,
+                    keyboard: Keyboard.builder()
+                        .textButton({
+                            label: 'Проверить выполнение условий',
+                            payload: {
+                                command: 'Проверить выполнение условий'
+                            }
+                        })
+                        
+              })
+              else
+                  context.send({
+                        message: `Произошла ошибка на сервере`,
+                        keyboard: Keyboard.builder()
+                            .textButton({
+                                label: 'Проверить выполнение условий',
+                                payload: {
+                                    command: 'Проверить выполнение условий'
+                                }
+                            })
+                            
+                  })
+        })
+    });
+    hearCommand('Проверить выполнение условий', async (context) => {
+      Users_Class.festival_requirement(context.senderId,(status,row) => 
       {
             if (row != 'sucessfuly')
-                ctx.reply(row, null, Markup
-                    .keyboard([
-                      'Проверить выполнение условий',
-                      'Подписаться на рассылку'
-                    ], { columns: 1 })
-                    .inline(),
-                );
+               context.send({
+                      message: row,
+                      keyboard: Keyboard.builder()
+                          .textButton({
+                              label: 'Проверить выполнение условий',
+                              payload: {
+                                  command: 'Проверить выполнение условий'
+                              }
+                          })
+                });
             else
             {
                 console.log("festival_requirement_status:" ,status)
                 console.log("festival_requirment_row :",row)
-                Users_Class.get_by_id(ctx.message.from_id,(ch_status,ch_row) => 
+                Users_Class.get_by_id(context.senderId,(ch_status,ch_row) => 
                 { 
                   if (ch_status == 'error')
-                    ctx.reply('Произошла ошибка на сервере', null, Markup
-                       .keyboard([
-                         'Проверить выполнение условий',
-                        ], { columns: 1 })
-                      .inline(),
-                    );
+                    context.send({
+                              message: 'Произошла ошибка на сервере',
+                              keyboard: Keyboard.builder()
+                                  .textButton({
+                                      label: 'Проверить выполнение условий',
+                                      payload: {
+                                          command: 'Проверить выполнение условий'
+                                      }
+                                  })
+                    });
                    else
                    {
                        const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${base64.encode(JSON.stringify(ch_row))}`
@@ -84,74 +178,39 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                         {
                            if (status == 'sucess')
                            {
-                              api('photos.getMessagesUploadServer', {
-                                peer_id: ctx.message.from_id,
-                                access_token: 'vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ',
+                             upload.messagePhoto({
+                                        source: {
+                                            value: qr_code
+                                        }
                               })
-                              .then((getserver_row) => 
+                              .then((uploadphoto_row) =>
                               {
-                                axios({
-                                    method: 'get',
-                                    url: qr_code,
-                                    responseType: 'stream', // Указываем, что ожидаем поток
-                                })
-                                .then((image_response) => 
-                                {
-                                    const form = new FormData();
-                                    form.append('photo', image_response.data, { filename: 'image.png' }); // Можно указать имя файла
-                                    console.log(form)
-                                    console.log(getserver_row['response'])
-                                      // Отправляем POST-запрос с формой
-                                      axios.post(getserver_row['response']['upload_url'], form, {
-                                        headers: {
-                                            ...form.getHeaders(),
-                                        },
-                                    })
-                                    .then((uploadserver_row) => {
-                                        api('photos.saveMessagesPhoto', {
-                                          photo: uploadserver_row['data']['photo'],
-                                          server: uploadserver_row['data']['server'],
-                                          hash: uploadserver_row['data']['hash'],
-                                          access_token: 'vk1.a.I2ML-nb2yu3xD_M2Vu380hX8RUcixN6ldF74WcFwFdiI7QtNemS-6ccclpDcaDKdN7B1IK4zjuevTQYBmQcGurhI_2nkkmgyEN0YVEaAKkgawOC_MLgTkJGh82ckNKD1xEEnOtuAQ4hgaBNf9HYMyEaz1m4-gLdnzFN02l6iyyT3iHdGPh0leNaCuabWbu880eq49PL1JaEMQiC_qrkPbQ',
-                                        })
-                                        .then((svm_row) => 
-                                        {
-                                        console.log(svm_row['response'][0]['sizes'])
-                                        bot.sendMessage(ctx.message.from_id, 'Вот ваш qr-code', `photo${svm_row['response'][0]['owner_id']}_${svm_row['response'][0]['id']}`);
-                                        })
-                                    })
-                                })
+                                  api.messages.send({
+                                    'message': 'Вот ваш qr code:',
+                                    'peer_id': context.senderId,
+                                    'attachment': uploadphoto_row,
+                                    'random_id': 0
+                                  })
                               })
                            }
                            else
-                             bot.sendMessage(ctx.message.from_id, 'Произошла ошибка на сервере');
-
+                              context.send({
+                                        message: 'Произошла ошибка на сервере',
+                                        keyboard: Keyboard.builder()
+                                            .textButton({
+                                                label: 'Проверить выполнение условий',
+                                                payload: {
+                                                    command: 'Проверить выполнение условий'
+                                                }
+                                            })
+                              });
                         })
                    }
                 })
             }
       })
-    });
-    bot.command('Подписаться на рассылку', (ctx) => {
-      Users_Class.insert_newsletter(ctx.message.from_id,(status,row) => 
-      {
-           if (status == 'sucess')
-             ctx.reply('Вы успешно подписались на рассылку', null, Markup
-                       .keyboard([
-                         'Проверить выполнение условий',
-                        ], { columns: 1 })
-                      .inline(),
-              );
-            else
-              ctx.reply('Произошла ошибка на сервере!', null, Markup
-                       .keyboard([
-                         'Проверить выполнение условий',
-                        ], { columns: 1 })
-                      .inline(),
-              );
-      })
-    });
-    bot.startPolling();
+    })
+    vk.updates.start().catch(console.error);
 
 }) 
 .catch((err) => console.log(err))
