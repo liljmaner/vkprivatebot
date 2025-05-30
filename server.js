@@ -144,7 +144,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             if (row != 'sucessfuly')
                context.send({
                       message: row,
-                      keyboard: Keyboard.builder()
+                      keyboard: Keyboard.builder().inline()
                           .textButton({
                               label: 'Проверить выполнение условий',
                               payload: {
@@ -161,7 +161,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                   if (ch_status == 'error')
                     context.send({
                               message: 'Произошла ошибка на сервере',
-                              keyboard: Keyboard.builder()
+                              keyboard: Keyboard.builder().inline()
                                   .textButton({
                                       label: 'Проверить выполнение условий',
                                       payload: {
@@ -196,7 +196,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                            else
                               context.send({
                                         message: 'Произошла ошибка на сервере',
-                                        keyboard: Keyboard.builder()
+                                        keyboard: Keyboard.builder().inline()
                                             .textButton({
                                                 label: 'Проверить выполнение условий',
                                                 payload: {
