@@ -194,7 +194,7 @@ class users
                 })
                 if (gbi_row['festival_users'] == true ) 
                     return callback("error","Вы уже учавствуете в фестивале ")
-
+                console.log("festival_req_gbi_row:", gbi_row)
                 return callback("sucess","sucessfuly")
             }
             else
