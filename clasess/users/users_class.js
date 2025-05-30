@@ -198,7 +198,7 @@ class users
                 return callback("sucess","sucessfuly")
             }
             else
-                return callback("error","Вы не выполнили одно из условий.")
+                return callback("error","Вы не выполнили оба условия.")
 
 
         })
