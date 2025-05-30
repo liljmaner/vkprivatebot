@@ -171,9 +171,10 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                     });
                    else
                    {
-                       ch_row['qr_code'] = qr_code
-                       ch_row['festival_users'] = true
+                      
+                    //    ch_row['festival_users'] = true
                        const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${base64.encode(JSON.stringify(ch_row))}`
+                        ch_row['qr_code'] = qr_code
                        Users_Class.change(ch_row['id'], ch_row , (status,row) => 
                         {
                            if (status == 'sucess')
