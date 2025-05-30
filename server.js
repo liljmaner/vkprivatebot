@@ -54,7 +54,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
     bot.command('Проверить выполнение условий', (ctx) => {
       Users_Class.festival_requirement(ctx.message.from_id,(status,row) => 
       {
-            if (status == 'error')
+            if (row != 'sucessfuly')
                 ctx.reply(row, null, Markup
                     .keyboard([
                       'Проверить выполнение условий',
@@ -66,7 +66,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             {
                 Users_Class.get_by_id(ctx.message.from_id,(ch_status,ch_row) => 
                 { 
-                   if (ch_status == 'error')
+                  if (ch_status == 'error')
                     ctx.reply('Произошла ошибка на сервере', null, Markup
                        .keyboard([
                          'Проверить выполнение условий',
