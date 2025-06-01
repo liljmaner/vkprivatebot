@@ -26,17 +26,7 @@ class users
     get_by_mongoid = (mongo_id, callback) => 
     {
          this.collection.findOne({"_id": new this.mongodb.ObjectId(mongo_id)})
-        .then((row) => {
-              this.api.call('users.get',{
-                        user_ids: row['id'],
-                        fields: 'photo_200'
-               })
-              .then((ug_row) => {
-                    row['name'] = `${ug_row[0]['first_name']}  ${ug_row[0]['last_name']}`;
-                    row['photo_200'] = ug_row[0]['photo_200'];
-                     return callback("sucess",row)
-                  })
-        })
+        .then((row) =>  callback("sucess",row))
         .catch((err) => callback("error",err) ) 
     }
     change = (id,object,callback) => 
