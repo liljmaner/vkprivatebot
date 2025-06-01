@@ -48,7 +48,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
               : null;
 
           return next();
-    });
+    }); 
     vk.updates.on('message_new', hearManager.middleware);
     const hearCommand = (name, conditions, handle) => {
         if (typeof handle !== 'function') {
@@ -70,8 +70,8 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             handle
         );
     };
-    hearCommand('Начать', async (context) => {
-        await context.send({
+    hearCommand('Начать',  (context) => {
+         context.send({ 
             message: `Привет, меня зовут Кленушка и я являюсь виртуальным асистентом Парк-отеля.\nУ нас будет проходить этно-фестиваль "Абашевские узоры" , не хочешь приехать?`,
             keyboard: Keyboard.builder()
                 .textButton({
@@ -87,11 +87,17 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                         command: 'Подписаться на рассылку'
                     }
                 })
-
+                .row()
+                .textButton({
+                    label: 'Проверить  подписку',
+                    payload: {
+                        command: 'Проверить подписку'
+                    }
+                })
         });
     });
-    hearCommand('Зарегистрироваться', async (context) => {
-        await context.send({
+    hearCommand('Зарегистрироваться',  (context) => {
+         context.send({
             message: `Для подтверждения регистрации необходимо подписаться на нашу группу и подписаться на рассылку, чтобы мы могли оперативно рассказывать вам все организационные моменты`,
             keyboard: Keyboard.builder()
                 .textButton({
@@ -107,9 +113,59 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                         command: 'Подписаться на рассылку'
                     }
                 })
+                .row()
+                .textButton({
+                    label: 'Проверить  подписку',
+                    payload: {
+                        command: 'Проверить подписку'
+                    }
+                })
         });
     });
-    hearCommand('Подписаться на рассылку', async (context) => {
+    hearCommand('Проверить  подписку',  (context) => {
+         Users_Class.check_subscribe(context.senderId,(status,row) => 
+         {
+            if (status == 'sucess') 
+               context.send({
+                    message: 'Вы успешно прошли проверку!',
+                    keyboard: Keyboard.builder()
+                        .textButton({
+                            label: 'Проверить выполнение условий',
+                            payload: {
+                                command: 'Проверить выполнение условий'
+                            }
+                        })
+                        .row()
+                        .textButton({
+                            label: 'Проверить  подписку',
+                            payload: {
+                               command: 'Проверить подписку'
+                            }
+                        })
+                        
+              })
+            else
+              context.send({
+                    message: row,
+                    keyboard: Keyboard.builder()
+                        .textButton({
+                            label: 'Проверить выполнение условий',
+                            payload: {
+                                command: 'Проверить выполнение условий'
+                            }
+                        })
+                        .row()
+                        .textButton({
+                            label: 'Проверить  подписку',
+                            payload: {
+                               command: 'Проверить подписку'
+                            }
+                        })
+                        
+              })
+         })
+    });
+    hearCommand('Подписаться на рассылку',  (context) => {
         Users_Class.insert_newsletter(context.senderId,(status,row) => 
         {
             if (status == 'sucess')
@@ -120,6 +176,13 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                             label: 'Проверить выполнение условий',
                             payload: {
                                 command: 'Проверить выполнение условий'
+                            }
+                        })
+                        .row()
+                        .textButton({
+                            label: 'Проверить  подписку',
+                            payload: {
+                               command: 'Проверить подписку'
                             }
                         })
                         
@@ -138,7 +201,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                   })
         })
     });
-    hearCommand('Проверить выполнение условий', async (context) => {
+    hearCommand('Проверить выполнение условий',  (context) => {
       Users_Class.festival_requirement(context.senderId,(status,row) => 
       {
             if (row != 'sucessfuly')
@@ -151,6 +214,13 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                                   command: 'Проверить выполнение условий'
                               }
                           })
+                        .row()
+                        .textButton({
+                        label: 'Проверить  подписку',
+                                payload: {
+                                    command: 'Проверить подписку'
+                                }
+                        })
                 });
             else
             {
@@ -168,6 +238,13 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                                           command: 'Проверить выполнение условий'
                                       }
                                   })
+                                  .row()
+                                  .textButton({
+                                    label: 'Проверить  подписку',
+                                            payload: {
+                                                command: 'Проверить подписку'
+                                            }
+                                    })
                     });
                    else
                    {
@@ -203,6 +280,13 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                                                     command: 'Проверить выполнение условий'
                                                 }
                                             })
+                                            .row()
+                                            .textButton({
+                                                label: 'Проверить  подписку',
+                                                        payload: {
+                                                            command: 'Проверить подписку'
+                                                        }
+                                                })
                               });
                         })
                    }

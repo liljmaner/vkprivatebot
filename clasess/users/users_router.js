@@ -22,14 +22,15 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
         {
             console.log(Request_CheckJSON.new_event)
             console.log(req.body['type'])
-            if (req.body['type'] == 'group_join' || req.body['type'] == 'like_add'  )
+            if (req.body['type'] == 'like_add'  )
             {
               console.log("1")
               Users_Class.check_user({
-                  "id": typeof(req.body['object']['user_id']) == 'undefined' ?   req.body['object']['liker_id'] : req.body['object']['user_id']  ,
+                  "id": req.body['object']['liker_id'] ,
                   "event": req.body['type'],
               }, (cu_status,cu_row) => 
               {
+                console.log(cu_row);
                 if (cu_status == 'sucess')
                   res.status(200).send("a2ff670e");
                 else
@@ -45,7 +46,8 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             }
         }
         else
-            res.status(200).send("a2ff670e");
+           res.status(500).json({"status": "error", "description": "request check error"})
+
       })
   })
   router.post("/insert_newsletter", (req,res) => 

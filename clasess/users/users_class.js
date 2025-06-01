@@ -34,7 +34,7 @@ class users
               .then((ug_row) => {
                     row['name'] = `${ug_row[0]['first_name']}  ${ug_row[0]['last_name']}`;
                     row['photo_200'] = ug_row[0]['photo_200'];
-                    callback("sucess",row)
+                     return callback("sucess",row)
                   })
         })
         .catch((err) => callback("error",err) ) 
@@ -44,6 +44,27 @@ class users
       this.collection.replaceOne({"id":id},object)
       .then((row) => callback("sucess",row))
       .catch((err) => callback("error",err) ) 
+    }
+    insert_maininfo = (id,callback) => 
+    {
+        this.api.users.get({
+            'user_ids': id,
+            fields: 'photo_200'
+        })
+        .then((ug_row) => 
+        {
+            this.get_by_id(id,(gbi_status,gbi_row) => 
+            {
+                if (gbi_status == 'error')
+                    return callback(gbi_status,gbi_row)
+                else
+                {
+                    gbi_row['name'] = `${ug_row[0]['first_name']}  ${ug_row[0]['last_name']}`;
+                    gbi_row['photo_200'] = ug_row[0]['photo_200'];
+                    this.change(id,gbi_row,(status,row) => callback(status,row) )
+                }
+            })
+        })
     }
     change_feststatus = (id,status,callback) => 
     {
@@ -69,6 +90,8 @@ class users
             if (gbi_status != 'sucess')
                 return callback("error",gbi_row)
             if  (gbi_row == null || typeof(gbi_row) == 'undefined')
+            {
+                
                 this.insert({
                     "id": object['id'],
                     "events": 
@@ -79,7 +102,7 @@ class users
                         },
                         {   
                             "name": "group_join",
-                            "value": object['event'] == 'group_join'
+                            "value": false
                         },
                         {
                             "name": "newsletter_allowed",
@@ -89,9 +112,15 @@ class users
                     "is_used": false,
                     "festival_users": false,
                     "qr_code": ""
-                }, (ins_status,ins_row) => callback(ins_status,ins_row) )
+                }, (ins_status,ins_row) => 
+                { 
+                   this.insert_maininfo(object['id'],(inmi_status,inmi_row) => callback(inmi_status,inmi_row))
+                } )
+            }
+
             else
             {
+                console.log("1231231231212")
                 const new_events = gbi_row['events'].map(arr_el => 
                 {
                        if ( arr_el['name'] == object['event'])
@@ -167,7 +196,9 @@ class users
                         "is_used": false,
                         "festival_users": false,
                         "qr_code": ""
-                    }, (ins_status,ins_row) => callback(ins_status,ins_row) )
+                    }, (ins_status,ins_row) => {
+                        this.insert_maininfo(id,(inmi_status,inmi_row) => callback(inmi_status,inmi_row))
+                    } )
                 }
               }
             
@@ -201,7 +232,7 @@ class users
                 return callback("error",gbi_row)
             if (gbi_row != null && typeof(gbi_row) != 'undefined')
             {
-                if (gbi_row['events'][2]['value'] == true == true && gbi_row['events'][1]['value'] == true && gbi_row['festival_users'] == false)
+                if (gbi_row['events'][2]['value'] == true  && gbi_row['events'][1]['value'] == true && gbi_row['festival_users'] == false)
                     return callback("sucess",'sucessfuly')
                 else if (gbi_row['festival_users'] == true)
                     return callback("error","Вы уже участник фестиваля")
@@ -213,6 +244,32 @@ class users
 
 
         })
+    }
+    check_subscribe = (id,callback) => 
+    {
+      this.api.call('groups.isMember', { 
+        'group_id': '230259684',
+        'user_id': id,
+      })
+      .then((ismember_row) => 
+      {
+        if (ismember_row == 1)
+        {
+            this.get_by_id(id,(gbi_status,gbi_row) => 
+            {
+                 if (gbi_status == 'sucess')
+                 {
+                    gbi_row['events']['1']['value'] = true
+                    this.change(id,gbi_row,(ch_status,ch_row) => callback(ch_status,ch_row))
+                 }
+                 else
+                  return callback('error', 'Произошла ошибка при получении пользователя')
+
+            })
+        }
+        else
+           return callback('error','Вы не подписаны на группу?')
+      })   
     }
 
 }
