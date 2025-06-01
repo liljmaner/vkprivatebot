@@ -73,7 +73,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
     hearCommand('Начать',  (context) => {
          context.send({ 
             message: `Привет, меня зовут Кленушка и я являюсь виртуальным асистентом Парк-отеля.\nУ нас будет проходить этно-фестиваль "Абашевские узоры" , не хочешь приехать?`,
-            keyboard: Keyboard.builder()
+            keyboard: Keyboard.builder().inline()
                 .textButton({
                     label: 'Зарегистрироваться',
                     payload: {
@@ -99,7 +99,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
     hearCommand('Зарегистрироваться',  (context) => {
          context.send({
             message: `Для подтверждения регистрации необходимо подписаться на нашу группу и подписаться на рассылку, чтобы мы могли оперативно рассказывать вам все организационные моменты`,
-            keyboard: Keyboard.builder()
+            keyboard: Keyboard.builder().inline()
                 .textButton({
                     label: 'Проверить выполнение условий',
                     payload: {
@@ -171,7 +171,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             if (status == 'sucess')
               context.send({
                     message: `Вы успешно подписались на рассылку`,
-                    keyboard: Keyboard.builder()
+                    keyboard: Keyboard.builder().inline()
                         .textButton({
                             label: 'Проверить выполнение условий',
                             payload: {
@@ -190,7 +190,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
               else
                   context.send({
                         message: `Произошла ошибка на сервере`,
-                        keyboard: Keyboard.builder()
+                        keyboard: Keyboard.builder().inline()
                             .textButton({
                                 label: 'Проверить выполнение условий',
                                 payload: {
@@ -207,7 +207,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
             if (row != 'sucessfuly')
                context.send({
                       message: row,
-                      keyboard: Keyboard.builder()
+                      keyboard: Keyboard.builder().inline()
                           .textButton({
                               label: 'Проверить выполнение условий',
                               payload: {
@@ -231,7 +231,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                   if (ch_status == 'error')
                     context.send({
                               message: 'Произошла ошибка на сервере',
-                              keyboard: Keyboard.builder()
+                              keyboard: Keyboard.builder().inline()
                                   .textButton({
                                       label: 'Проверить выполнение условий',
                                       payload: {
@@ -248,9 +248,10 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                     });
                    else
                    {
-                       ch_row['qr_code'] = qr_code
-                       ch_row['festival_users'] = true
+                      
+                    //    ch_row['festival_users'] = true
                        const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${base64.encode(JSON.stringify(ch_row))}`
+                        ch_row['qr_code'] = qr_code
                        Users_Class.change(ch_row['id'], ch_row , (status,row) => 
                         {
                            if (status == 'sucess')
@@ -273,7 +274,7 @@ mongodb.MongoClient.connect('mongodb://127.0.0.1:27017/')
                            else
                               context.send({
                                         message: 'Произошла ошибка на сервере',
-                                        keyboard: Keyboard.builder()
+                                        keyboard: Keyboard.builder().inline()
                                             .textButton({
                                                 label: 'Проверить выполнение условий',
                                                 payload: {
